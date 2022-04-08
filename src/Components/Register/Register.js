@@ -1,17 +1,21 @@
-import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { createUserWithEmailAndPassword, FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, sendEmailVerification, signInWithPopup } from 'firebase/auth';
 import React, { useState } from 'react';
 import auth from '../../firebase.init';
 import GoogleLogo from '../../Images/google.svg'
 import GithubLogo from '../../Images/github.svg'
 import FacebookLogo from '../../Images/facebook.svg'
+import { useNavigate } from 'react-router-dom';
 
 const googleProvider = new GoogleAuthProvider();
+const githubProvvider = new GithubAuthProvider();
+const facebookProvider = new FacebookAuthProvider();
 
 const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('')
     const [user, setUser] = useState('')
     const [error, setError] = useState('')
+    const navigate = useNavigate()
     //Email Field
     const getEmail = event => {
         setEmail(event.target.value);
@@ -30,11 +34,19 @@ const Register = () => {
                 const user = result.user;
                 setUser(user)
                 console.log(user);
+                sendVerificationEmail()
             }).catch(error => {
                 setError(error.message)
                 console.log(error.message);
             })
         
+    }
+    //Sending verification email for the first signup
+    const sendVerificationEmail = () => {
+        sendEmailVerification(auth.currentUser)
+            .then(() => {
+            console.log("Verification Email sent");
+        })
     }
     //Creating user with google signin
     const handleGoolgeSignIn = () => {
@@ -46,6 +58,30 @@ const Register = () => {
             }).catch(error => {
                 setError(error.message)
                 console.log(error.message);
+        })
+    }
+    //Creating user with github signin
+    const handleGithubSignIn = () => {
+        signInWithPopup(auth, githubProvvider)
+            .then(result => {
+                const user = result.user;
+                setUser(user)
+                console.log(user)
+            }).catch(error => {
+                setError(error.message)
+                console.error(error.message)
+        })
+    }
+    //Creating user with facebook signin
+    const handleFacebookSignIn = () => {
+        signInWithPopup(auth, facebookProvider)
+            .then(result => {
+                const user = result.user;
+                setUser(user)
+                console.log(user)
+            }).catch(error => {
+                setError(error.message)
+                console.error(error.message)
         })
     }
     return (
@@ -81,7 +117,7 @@ const Register = () => {
                 </form>
                 <p className='redirect'>
                     Already have an account?{" "}
-                    <span>Login</span>
+                    <span onClick={() => navigate('/login')}>Login</span>
                 </p>
                 <div className='horizontal-divider'>
                     <div className='line-left' />
@@ -92,10 +128,10 @@ const Register = () => {
                     <button onClick={handleGoolgeSignIn} className='google-auth'>
                         <img src={GoogleLogo} alt='' />
                     </button>
-                    <button className='google-auth'>
+                    <button onClick={handleGithubSignIn} className='google-auth'>
                         <img className='github' src={GithubLogo} alt='' />
                     </button>
-                    <button className='google-auth'>
+                    <button onClick={handleFacebookSignIn} className='google-auth'>
                         <img className='facebook' src={FacebookLogo} alt='' />
                     </button>
                 </div>
