@@ -44,6 +44,7 @@
       #f200fa 0%,
       #800085 100%
     );
+    display: flex;
   }
   
   .input-field input {
@@ -72,7 +73,7 @@
   
   .google-auth {
     height: 55px;
-    width: 415px;
+    width: 50px;
     background-color: #fff;
     border-radius: 5px;
     font-size: 15px;
@@ -142,3 +143,15 @@
     font-size: 15px;
   }
   
+  .provider-parent{
+    display: flex;
+    width: 250px;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #fff !important;
+  }
+  .facebook,
+  .github
+  {
+    width: 35px;
+  }
